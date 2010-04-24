@@ -7,6 +7,7 @@ import android.util.Log;
  */
 public class GraphicsUpdaterThread extends Thread {
 
+  // arbitrarily picked; update every 50 ms = no lag maybe?
   private static final long UPDATE_INTERVAL_MS = 50;
   private YelicopterView view;
   
@@ -25,8 +26,7 @@ public class GraphicsUpdaterThread extends Thread {
       try {
         Thread.sleep(UPDATE_INTERVAL_MS);
       } catch (InterruptedException e) {
-        e.printStackTrace();
-        Log.d("GraphicsUpdaterThread", "failed at thread.sleeping", e);
+        Log.d(YelicopterActivity.DEBUG_TAG, "failed at thread.sleeping", e);
       }
     }
   }

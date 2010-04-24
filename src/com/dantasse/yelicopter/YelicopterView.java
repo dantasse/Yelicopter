@@ -45,12 +45,16 @@ public class YelicopterView extends View {
   }
   
   private void drawCopter(Canvas canvas) {
-    canvas.drawRect(new Rect(50, 800 - actualHeight, 100, 850 - actualHeight),
+    // height used to be between 100 and 400; scale it to the screen size.
+    int range = YelicopterActivity.FREQ_TOP_OF_SCREEN - YelicopterActivity.FREQ_BOTTOM_OF_SCREEN;
+    int heightToDraw = (actualHeight - YelicopterActivity.FREQ_BOTTOM_OF_SCREEN) * canvas.getHeight() / range;
+    canvas.drawRect(new Rect(50, canvas.getHeight() - heightToDraw - 50, 100,
+        canvas.getHeight() - heightToDraw),
         paint);
   }
 
   public void invalidateCopter() {
-    invalidate(new Rect(45, 0, 105, 800));
+    invalidate(new Rect(45, this.getTop(), 105, this.getBottom()));
   }
 
   public void setTargetHeight(int targetHeight) {

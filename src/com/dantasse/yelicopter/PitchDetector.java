@@ -10,7 +10,7 @@ public class PitchDetector {
     fft = new FloatFFT_1D(bufferSize);
   }
 
-  int detectPitch(Short[] audioBuffer) {
+  int detectPitch(short[] audioBuffer) {
     // ugh, convert a short[] to a float[]
     float[] transformBuffer = new float[audioBuffer.length];
     for(int j = 0; j < audioBuffer.length; j++) {
