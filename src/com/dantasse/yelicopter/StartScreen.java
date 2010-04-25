@@ -32,7 +32,10 @@ public class StartScreen extends View implements OnClickListener {
   }
 
   public void onDraw(Canvas canvas) {
-    canvas.drawText("Whistle to steer the Yelicopter up and down.", 50f, 100f, paint);
+    canvas.drawText("Whistle to steer the",
+        50f, 100f, paint);
+    canvas.drawText("weasel up and down.",
+        50f, 150f, paint);
     canvas.drawText("Click to start.", 50f, 200f, paint);
   }
 

@@ -21,6 +21,7 @@ public class GraphicsUpdaterThread extends Thread {
       view.getHandler().post(new Runnable() {
         public void run() {
           view.invalidateCopter();
+          
         }
       });
       try {

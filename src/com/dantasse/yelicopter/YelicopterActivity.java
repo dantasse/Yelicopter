@@ -5,12 +5,9 @@ import java.text.NumberFormat;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-//import android.view.View;
-//import android.view.View.OnClickListener;
-//import android.widget.Button;
 import android.widget.TextView;
 
-public class YelicopterActivity extends Activity { // implements OnClickListener {
+public class YelicopterActivity extends Activity {
 
   public static final String DEBUG_TAG = "YELICOPTER";
   
@@ -24,7 +21,6 @@ public class YelicopterActivity extends Activity { // implements OnClickListener
   static final int FREQ_UPPER_LIMIT = 1000;
 
   private TextView textView;
-//  private Button button1;
   private RecordingThread recordingThread;
   private StartScreen startScreen;
   private YelicopterView yelicopterView;
@@ -57,9 +53,7 @@ public class YelicopterActivity extends Activity { // implements OnClickListener
   public void startMainScreen() {
     setContentView(R.layout.main);
     textView = (TextView) findViewById(R.id.TextView01);
-//    button1 = (Button) findViewById(R.id.Button01);
     yelicopterView = (YelicopterView) findViewById(R.id.YelicopterView);
-//    button1.setOnClickListener(this);
     startRecordingAndGraphicsUpdaterThreads();
   }
 
@@ -80,12 +74,6 @@ public class YelicopterActivity extends Activity { // implements OnClickListener
     yelicopterView.setTargetHeight(newTargetHeight);
     yelicopterView.invalidateCopter();
   }
-
-//  public void onClick(View v) {
-//    if (v.equals(button1)) {
-//      startRecordingAndGraphicsUpdaterThreads();
-//    }
-//  }
 
   /** Used to tell the UI thread to do things. */
   public Handler getUiThreadHandler() {
