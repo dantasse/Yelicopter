@@ -46,7 +46,7 @@ public class YelicopterView extends View {
   private int targetHeight = 0;
 
   /**
-   * The height that the copter is currently at.
+   * The most recent frequency reading.
    */
   private int actualHeight = 0;
 
@@ -79,6 +79,7 @@ public class YelicopterView extends View {
     greenPaint.setStrokeWidth(5.0f);
     greenPaint.setTextSize(50.0f);
     weasel = context.getResources().getDrawable(R.drawable.gliding_weasel);
+    actualHeight = getHeight() / 2;
   }
 
   @Override
@@ -87,7 +88,7 @@ public class YelicopterView extends View {
     long drawStart = System.currentTimeMillis();
     canvas.drawColor(Color.BLUE, Mode.LIGHTEN);
     adjustCopterHeight();
-    drawCopter(canvas);
+    drawWeasel(canvas);
     adjustClouds();
     drawClouds(canvas);
     Log.d(YelicopterActivity.DEBUG_TAG, 
@@ -104,16 +105,16 @@ public class YelicopterView extends View {
     actualHeight += difference;
   }
 
-  private void drawCopter(Canvas canvas) {
+  private void drawWeasel(Canvas canvas) {
     // scale it to the screen size
-    int range = YelicopterActivity.FREQ_TOP_OF_SCREEN - WEASEL_HEIGHT -
+    int frequencyRange = YelicopterActivity.FREQ_TOP_OF_SCREEN -
         YelicopterActivity.FREQ_BOTTOM_OF_SCREEN;
     int heightToDraw = (actualHeight - YelicopterActivity.FREQ_BOTTOM_OF_SCREEN)
-        * (canvas.getHeight() - WEASEL_HEIGHT) / range;
+        * (canvas.getHeight() - WEASEL_HEIGHT) / frequencyRange;
 
     weasel.setBounds(50 /*left*/,
         canvas.getHeight() - heightToDraw - WEASEL_HEIGHT /*top*/,
-        50 + WEASEL_WIDTH /*right*/, 
+        50 + WEASEL_WIDTH /*right*/,
         canvas.getHeight() - heightToDraw /*bottom*/);
 
     // Rotate the weasel by rotating the canvas.  Save and restore the canvas
@@ -125,10 +126,10 @@ public class YelicopterView extends View {
     canvas.setMatrix(matrix);
     weasel.draw(canvas);
     canvas.restore();
-
   }
   
   private void adjustClouds() {
+    // maybe make a new cloud
     if (Math.random() < CLOUD_PROBABILITY) {
       int top = (int) (Math.random() * getHeight());
       clouds.add(new Rect(getWidth(), top, getWidth() + 50, top + 50));
@@ -151,7 +152,7 @@ public class YelicopterView extends View {
     }
   }
 
-  public void invalidateCopter() {
+  public void invalidateWeasel() {
     // Oh hell just redraw the whole screen, I don't think it takes very long.
     invalidate();
   }

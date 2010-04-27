@@ -72,7 +72,7 @@ public class YelicopterActivity extends Activity {
 
     textView.setText("frequency: " + format.format(newTargetHeight));
     yelicopterView.setTargetHeight(newTargetHeight);
-    yelicopterView.invalidateCopter();
+    yelicopterView.invalidateWeasel();
   }
 
   /** Used to tell the UI thread to do things. */
