@@ -20,7 +20,7 @@ public class GraphicsUpdaterThread extends Thread {
     while(true) {
       view.getHandler().post(new Runnable() {
         public void run() {
-          view.invalidateCopter();
+          view.invalidateWeasel();
           
         }
       });

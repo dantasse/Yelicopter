@@ -36,6 +36,13 @@ public class YelicopterView extends View {
   
   // odds that you'll get a new cloud on any given frame.
   private static final double CLOUD_PROBABILITY = .03;
+
+  // how many pixels per redraw the pineapples will move.
+  private static final int PINEAPPLE_SPEED = 5;
+  
+  // odds that you'll get a new pineapple on any given frame.
+  private static final double PINEAPPLE_PROBABILITY = .03;
+
   private Paint redPaint;
   private Paint greenPaint;
 
@@ -64,7 +71,14 @@ public class YelicopterView extends View {
   /**
    * These are harmless screen decorations.
    */
-  private ArrayList<Rect> clouds = new ArrayList<Rect>();
+  private ArrayList<Drawable> clouds = new ArrayList<Drawable>();
+
+  /**
+   * These are tasty!  Get them!
+   */
+  private ArrayList<Drawable> pineapples = new ArrayList<Drawable>();
+  
+  Context context;
   
   public YelicopterView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -80,6 +94,7 @@ public class YelicopterView extends View {
     greenPaint.setTextSize(50.0f);
     weasel = context.getResources().getDrawable(R.drawable.gliding_weasel);
     actualHeight = getHeight() / 2;
+    this.context = context;
   }
 
   @Override
@@ -88,9 +103,12 @@ public class YelicopterView extends View {
     long drawStart = System.currentTimeMillis();
     canvas.drawColor(Color.BLUE, Mode.LIGHTEN);
     adjustCopterHeight();
-    drawWeasel(canvas);
     adjustClouds();
+    adjustPineapples();
+    // draw in this order so weasel is on top, then pineapples, then clouds.
     drawClouds(canvas);
+    drawPineapples(canvas);
+    drawWeasel(canvas);
     Log.d(YelicopterActivity.DEBUG_TAG, 
         "Draw time: " + (System.currentTimeMillis() - drawStart));
   }
@@ -119,27 +137,35 @@ public class YelicopterView extends View {
 
     // Rotate the weasel by rotating the canvas.  Save and restore the canvas
     // before and after so you don't rotate anything else.
-    canvas.save();
-    Matrix matrix = canvas.getMatrix();
-    matrix.setRotate(rotation, weasel.getBounds().centerX(),
-        weasel.getBounds().centerY());
-    canvas.setMatrix(matrix);
+//    canvas.save();
+//    Matrix matrix = canvas.getMatrix();
+//    matrix.setRotate(rotation, weasel.getBounds().centerX(),
+//        weasel.getBounds().centerY());
+//    canvas.setMatrix(matrix);
+    
     weasel.draw(canvas);
-    canvas.restore();
+//    canvas.restore();
   }
   
   private void adjustClouds() {
     // maybe make a new cloud
     if (Math.random() < CLOUD_PROBABILITY) {
       int top = (int) (Math.random() * getHeight());
-      clouds.add(new Rect(getWidth(), top, getWidth() + 50, top + 50));
+      Drawable newCloud = context.getResources().getDrawable(R.drawable.cloud);
+      newCloud.setBounds(getRight() /*left*/,
+          top /*top*/,
+          getRight() + newCloud.getMinimumWidth(),
+          top + newCloud.getMinimumHeight());
+      clouds.add(newCloud);
     }
     // move each cloud, and delete any clouds that are off the screen.
-    ArrayList<Rect> cloudsToRemove = new ArrayList<Rect>();
-    for(Rect cloud : clouds) {
-      cloud.left -= CLOUD_SPEED;
-      cloud.right -= CLOUD_SPEED;
-      if (cloud.right < getLeft()) {
+    ArrayList<Drawable> cloudsToRemove = new ArrayList<Drawable>();
+    for(Drawable cloud : clouds) {
+      cloud.setBounds(cloud.getBounds().left - CLOUD_SPEED,
+          cloud.getBounds().top,
+          cloud.getBounds().right - CLOUD_SPEED,
+          cloud.getBounds().bottom);
+      if (cloud.getBounds().right < getLeft()) {
         cloudsToRemove.add(cloud);
       }
     }
@@ -147,8 +173,53 @@ public class YelicopterView extends View {
   }
   
   private void drawClouds(Canvas canvas) {
-    for(Rect r : clouds) {
-      canvas.drawRect(r, greenPaint);
+    for(Drawable cloud : clouds) {
+      cloud.draw(canvas);
+    }
+  }
+  
+  private void adjustPineapples() {
+    // maybe make a new pineapple
+    if (Math.random() < PINEAPPLE_PROBABILITY) {
+      int top = (int) (Math.random() * getHeight());
+      
+      // make a pineapple.  This shares state with all other pineapple images
+      // (so if I edited the base pineapple image they would all change) because
+      // I didn't call Drawable.mutate().
+      Drawable newPineapple = context.getResources().getDrawable(R.drawable.pineapple);
+      newPineapple.setBounds(getRight() /*left*/,
+          top /*top*/,
+          getRight() + newPineapple.getMinimumWidth() /*right*/,
+          top + newPineapple.getMinimumHeight() /*bottom*/);
+      pineapples.add(newPineapple);
+    }
+    // Move each pineapple. If any collide with the weasel, mark them for
+    // eating.  If any are off the screen, mark them for deletion.
+    ArrayList<Drawable> pineapplesToRemove = new ArrayList<Drawable>();
+    ArrayList<Drawable> pineapplesEaten = new ArrayList<Drawable>();
+    for(Drawable pineapple : pineapples) {
+      Rect old = pineapple.getBounds();
+      pineapple.setBounds(old.left - PINEAPPLE_SPEED, old.top,
+          old.right - PINEAPPLE_SPEED, old.bottom);
+      if (old.right < getLeft()) {
+        pineapplesToRemove.add(pineapple);
+      } else if (old.left < weasel.getBounds().right - 7) {
+        if (old.top > (weasel.getBounds().top - old.height()) && 
+            old.top < weasel.getBounds().bottom)
+          pineapplesEaten.add(pineapple);
+      }
+    }
+    // temporary animation to shrink pineapples that you've "eaten"
+    for(Drawable pineapple : pineapplesEaten) {
+      pineapplesToRemove.add(pineapple);
+    }
+    // Delete any pineapples that are off the screen.
+    pineapples.removeAll(pineapplesToRemove);
+  }
+  
+  private void drawPineapples(Canvas canvas) {
+    for(Drawable pineapple : pineapples) {
+      pineapple.draw(canvas);
     }
   }
 
