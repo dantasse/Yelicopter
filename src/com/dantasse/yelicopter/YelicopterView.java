@@ -5,21 +5,14 @@ import java.util.ArrayList;
 import com.dantasse.yelicopter.R;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 public class YelicopterView extends View {
 
@@ -43,9 +36,6 @@ public class YelicopterView extends View {
   // odds that you'll get a new pineapple on any given frame.
   private static final double PINEAPPLE_PROBABILITY = .03;
 
-  private Paint redPaint;
-  private Paint greenPaint;
-
   /** 
    * The height that the copter will go toward. It doesn't just go there
    * immediately because we want the movement to be smooth.
@@ -57,52 +47,45 @@ public class YelicopterView extends View {
    */
   private int actualHeight = 0;
 
-  /**
-   * Our hero.
-   */
+  /** Our hero. */
   private Drawable weasel;
 
   /**
    * The angle that the weasel will be displayed at (tilted up if he just went
    * up, tilted down if he just went down).
    */
-  private float rotation = 0f;
+//  private float rotation = 0f;
 
-  /**
-   * These are harmless screen decorations.
-   */
+  /** Harmless screen decorations. */
   private ArrayList<Drawable> clouds = new ArrayList<Drawable>();
 
-  /**
-   * These are tasty!  Get them!
-   */
+  /** These are tasty!  Get them! */
   private ArrayList<Drawable> pineapples = new ArrayList<Drawable>();
   
   Context context;
   
+  /** 
+   * We hold a reference back to the activity to set the score.
+   * TODO(dantasse) refactor this mess.
+   */
+  private YelicopterActivity activity;
+  
   public YelicopterView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    redPaint = new Paint();
-    redPaint.setARGB(255, 255, 60, 10);
-    redPaint.setStyle(Style.STROKE);
-    redPaint.setStrokeWidth(5.0f);
-    redPaint.setTextSize(50.0f);
-    greenPaint = new Paint();
-    greenPaint.setARGB(255, 10, 255, 10);
-    greenPaint.setStyle(Style.STROKE);
-    greenPaint.setStrokeWidth(5.0f);
-    greenPaint.setTextSize(50.0f);
     weasel = context.getResources().getDrawable(R.drawable.gliding_weasel);
     actualHeight = getHeight() / 2;
     this.context = context;
+  }
+  
+  public void setActivity(YelicopterActivity activity) {
+    this.activity = activity;
   }
 
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     long drawStart = System.currentTimeMillis();
-    canvas.drawColor(Color.BLUE, Mode.LIGHTEN);
-    adjustCopterHeight();
+    adjustWeaselHeight();
     adjustClouds();
     adjustPineapples();
     // draw in this order so weasel is on top, then pineapples, then clouds.
@@ -114,12 +97,12 @@ public class YelicopterView extends View {
   }
 
   /** Move actualHeight a little closer to targetHeight */
-  private void adjustCopterHeight() {
+  private void adjustWeaselHeight() {
     float difference = (targetHeight - actualHeight) / 10.0f;
     
     // biggest nosedive = 90 degrees. biggest upward tilt = -90 degrees.    
-    rotation = - difference * 90 / ((YelicopterActivity.FREQ_TOP_OF_SCREEN -
-        YelicopterActivity.FREQ_BOTTOM_OF_SCREEN) / 20);
+//    rotation = - difference * 90 / ((YelicopterActivity.FREQ_TOP_OF_SCREEN -
+//        YelicopterActivity.FREQ_BOTTOM_OF_SCREEN) / 20);
     actualHeight += difference;
   }
 
@@ -137,6 +120,8 @@ public class YelicopterView extends View {
 
     // Rotate the weasel by rotating the canvas.  Save and restore the canvas
     // before and after so you don't rotate anything else.
+    // TODO(dantasse) this is commented out because, afterward, you can't rely
+    // on the weasel's height; he's in a different coordinate plane.  fix this.
 //    canvas.save();
 //    Matrix matrix = canvas.getMatrix();
 //    matrix.setRotate(rotation, weasel.getBounds().centerX(),
@@ -205,11 +190,14 @@ public class YelicopterView extends View {
         pineapplesToRemove.add(pineapple);
       } else if (old.left < weasel.getBounds().right - 7) {
         if (old.top > (weasel.getBounds().top - old.height()) && 
-            old.top < weasel.getBounds().bottom)
+            old.top < weasel.getBounds().bottom) {
           pineapplesEaten.add(pineapple);
+          activity.scoreAPoint();
+          activity.updateUi();
+        }
       }
     }
-    // temporary animation to shrink pineapples that you've "eaten"
+    
     for(Drawable pineapple : pineapplesEaten) {
       pineapplesToRemove.add(pineapple);
     }

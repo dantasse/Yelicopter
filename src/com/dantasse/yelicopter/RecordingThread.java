@@ -1,7 +1,5 @@
 package com.dantasse.yelicopter;
 
-import java.util.ArrayList;
-
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
@@ -38,7 +36,7 @@ public class RecordingThread extends Thread {
     int smallBufferSize = bigBufferSize;
     final short[] audioBuffer = new short[smallBufferSize];
     PitchDetector pitchDetector = new PitchDetector(smallBufferSize);
-    ArrayList<Short> slidingBuffer = new ArrayList<Short>();
+//    ArrayList<Short> slidingBuffer = new ArrayList<Short>();
 
     for(;;) {
       long startTime = System.currentTimeMillis();
@@ -81,7 +79,8 @@ public class RecordingThread extends Thread {
         final int finalMaxIndex = maxIndex;
         yelicopterActivity.getUiThreadHandler().post(new Runnable() {
           public void run() {
-            yelicopterActivity.updateUi(finalMaxIndex);
+            yelicopterActivity.setWeaselTop(finalMaxIndex);
+            yelicopterActivity.updateUi();
           }
         });
       }

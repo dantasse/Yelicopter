@@ -10,20 +10,20 @@ public class GraphicsUpdaterThread extends Thread {
   // arbitrarily picked; update every 50 ms = no lag maybe?
   private static final long UPDATE_INTERVAL_MS = 50;
   private YelicopterView view;
-  
+
   public GraphicsUpdaterThread(YelicopterView view) {
     this.view = view;
   }
-  
+
   @Override
   public void run() {
     while(true) {
-      view.getHandler().post(new Runnable() {
-        public void run() {
-          view.invalidateWeasel();
-          
-        }
-      });
+      if (view != null && view.getHandler() != null)
+        view.getHandler().post(new Runnable() {
+          public void run() {
+            view.invalidateWeasel();
+          }
+        });
       try {
         Thread.sleep(UPDATE_INTERVAL_MS);
       } catch (InterruptedException e) {

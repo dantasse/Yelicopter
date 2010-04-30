@@ -18,7 +18,7 @@ public final class R {
         public static final int weasel_and_glider=0x7f020004;
     }
     public static final class id {
-        public static final int StartScreen01=0x7f050002;
+        public static final int StartScreen=0x7f050002;
         public static final int TextView01=0x7f050000;
         public static final int YelicopterView=0x7f050001;
     }
@@ -28,5 +28,8 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int how_to_play=0x7f040001;
+        public static final int weasel=0x7f040003;
+        public static final int whistle=0x7f040002;
     }
 }
