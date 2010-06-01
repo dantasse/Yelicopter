@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <string name="app_name">Whistle Weasel</string>
+<string name="app_name">Whistle Weasel</string>
 <string name="how_to_play">Whistle to steer the weasel up and down.\nGet all the pineapples you can.\nClick to start.</string>
 <string name="whistle">Whistle</string>
 <string name="weasel">Weasel</string>

@@ -1,20 +1,18 @@
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 import java.util.ArrayList;
 
-import com.dantasse.yelicopter.R;
+import com.dantasse.whistleweasel.R;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-public class YelicopterView extends View {
+public class WWView extends View {
 
   // the dimensions of the weasel picture, as saved in the file.
   private static final int WEASEL_FILE_HEIGHT = 45;
@@ -68,16 +66,16 @@ public class YelicopterView extends View {
    * We hold a reference back to the activity to set the score.
    * TODO(dantasse) refactor this mess.
    */
-  private YelicopterActivity activity;
+  private WWActivity activity;
   
-  public YelicopterView(Context context, AttributeSet attrs) {
+  public WWView(Context context, AttributeSet attrs) {
     super(context, attrs);
     weasel = context.getResources().getDrawable(R.drawable.gliding_weasel);
     actualHeight = getHeight() / 2;
     this.context = context;
   }
   
-  public void setActivity(YelicopterActivity activity) {
+  public void setActivity(WWActivity activity) {
     this.activity = activity;
   }
 
@@ -92,8 +90,8 @@ public class YelicopterView extends View {
     drawClouds(canvas);
     drawPineapples(canvas);
     drawWeasel(canvas);
-    Log.d(YelicopterActivity.DEBUG_TAG, 
-        "Draw time: " + (System.currentTimeMillis() - drawStart));
+//    Log.d(YelicopterActivity.DEBUG_TAG, 
+//        "Draw time: " + (System.currentTimeMillis() - drawStart));
   }
 
   /** Move actualHeight a little closer to targetHeight */
@@ -108,9 +106,9 @@ public class YelicopterView extends View {
 
   private void drawWeasel(Canvas canvas) {
     // scale it to the screen size
-    int frequencyRange = YelicopterActivity.FREQ_TOP_OF_SCREEN -
-        YelicopterActivity.FREQ_BOTTOM_OF_SCREEN;
-    int heightToDraw = (actualHeight - YelicopterActivity.FREQ_BOTTOM_OF_SCREEN)
+    int frequencyRange = WWActivity.FREQ_TOP_OF_SCREEN -
+        WWActivity.FREQ_BOTTOM_OF_SCREEN;
+    int heightToDraw = (actualHeight - WWActivity.FREQ_BOTTOM_OF_SCREEN)
         * (canvas.getHeight() - WEASEL_HEIGHT) / frequencyRange;
 
     weasel.setBounds(50 /*left*/,
@@ -209,11 +207,6 @@ public class YelicopterView extends View {
     for(Drawable pineapple : pineapples) {
       pineapple.draw(canvas);
     }
-  }
-
-  public void invalidateWeasel() {
-    // Oh hell just redraw the whole screen, I don't think it takes very long.
-    invalidate();
   }
 
   public void setTargetHeight(int targetHeight) {

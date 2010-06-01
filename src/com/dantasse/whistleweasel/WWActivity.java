@@ -1,4 +1,4 @@
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 import java.text.NumberFormat;
 
@@ -12,22 +12,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class YelicopterActivity extends Activity {
+public class WWActivity extends Activity {
 
   public static final String DEBUG_TAG = "WHISTLE_WEASEL";
 
   // if you get a reading below this, it's a mistake, ignore it
-  static final int FREQ_LOWER_LIMIT = 100;
+  static final int FREQ_LOWER_LIMIT = 50;
   // if you whistle this frequency, you'll be right at the bottom of the screen.
-  static final int FREQ_BOTTOM_OF_SCREEN = 200;
+  static final int FREQ_BOTTOM_OF_SCREEN = 100;
   // if you whistle this frequency, you'll be right at the top of the screen.
-  static final int FREQ_TOP_OF_SCREEN = 700;
+  static final int FREQ_TOP_OF_SCREEN = 280;
   // if you get a reading above this, it's a mistake, ignore it
-  static final int FREQ_UPPER_LIMIT = 1000;
+  static final int FREQ_UPPER_LIMIT = 400;
 
   private TextView textView;
   private RecordingThread recordingThread;
-  private YelicopterView yelicopterView;
+  private WWView wwView;
   private GraphicsUpdaterThread graphicsUpdaterThread;
 
   private Handler handler;
@@ -63,21 +63,16 @@ public class YelicopterActivity extends Activity {
     finish();
   }
 
-  @Override
-  protected void onStop() {
-    super.onStop();
-  }
-
   public void startMainScreen() {
     setContentView(R.layout.main);
     textView = (TextView) findViewById(R.id.TextView01);
-    yelicopterView = (YelicopterView) findViewById(R.id.YelicopterView);
-    yelicopterView.setActivity(this);
+    wwView = (WWView) findViewById(R.id.WWView);
+    wwView.setActivity(this);
     startRecordingAndGraphicsUpdaterThreads();
   }
 
   private void startRecordingAndGraphicsUpdaterThreads() {
-    graphicsUpdaterThread = new GraphicsUpdaterThread(yelicopterView);
+    graphicsUpdaterThread = new GraphicsUpdaterThread(wwView);
     graphicsUpdaterThread.start();
 
     recordingThread = new RecordingThread(this);
@@ -97,9 +92,9 @@ public class YelicopterActivity extends Activity {
     format.setMinimumIntegerDigits(5);
     format.setGroupingUsed(false);
 
-    textView.setText("Pineapples: " + score);
-    yelicopterView.setTargetHeight(weaselTop);
-    yelicopterView.invalidateWeasel();
+    textView.setText("Pineapples: " + score + ", height: " + weaselTop);
+    wwView.setTargetHeight(weaselTop);
+    wwView.invalidate();
   }
 
   /** Used to tell the UI thread to do things. */

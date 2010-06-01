@@ -10,8 +10,8 @@
   android:id="@+id/TextView01"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content" />
-<com.dantasse.yelicopter.YelicopterView
-  android:id="@+id/YelicopterView" 
+<com.dantasse.whistleweasel.WWView
+  android:id="@+id/WWView" 
   android:layout_width="fill_parent" 
   android:layout_height="fill_parent"/>
 </LinearLayout>

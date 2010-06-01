@@ -1,4 +1,4 @@
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 import android.util.Log;
 
@@ -9,9 +9,9 @@ public class GraphicsUpdaterThread extends Thread {
 
   // arbitrarily picked; update every 50 ms = no lag maybe?
   private static final long UPDATE_INTERVAL_MS = 50;
-  private YelicopterView view;
+  private WWView view;
 
-  public GraphicsUpdaterThread(YelicopterView view) {
+  public GraphicsUpdaterThread(WWView view) {
     this.view = view;
   }
 
@@ -21,13 +21,13 @@ public class GraphicsUpdaterThread extends Thread {
       if (view != null && view.getHandler() != null)
         view.getHandler().post(new Runnable() {
           public void run() {
-            view.invalidateWeasel();
+            view.invalidate();
           }
         });
       try {
         Thread.sleep(UPDATE_INTERVAL_MS);
       } catch (InterruptedException e) {
-        Log.d(YelicopterActivity.DEBUG_TAG, "failed at thread.sleeping", e);
+//        Log.d(YelicopterActivity.DEBUG_TAG, "failed at thread.sleeping", e);
       }
     }
   }

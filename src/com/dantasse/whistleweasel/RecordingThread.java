@@ -1,4 +1,4 @@
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -13,13 +13,13 @@ public class RecordingThread extends Thread {
   private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO;
   private static final int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 
-  private YelicopterActivity yelicopterActivity;
+  private WWActivity wwActivity;
 
   // This class always crashes hard on the emulator!  Womp womp.
   private AudioRecord audioRecord;
 
-  public RecordingThread(YelicopterActivity yelicopterActivity) {
-    this.yelicopterActivity = yelicopterActivity;
+  public RecordingThread(WWActivity wwActivity) {
+    this.wwActivity = wwActivity;
   }
 
   public void run() {
@@ -59,28 +59,28 @@ public class RecordingThread extends Thread {
       int maxIndex = pitchDetector.detectPitch(audioBuffer);
       
       long computeTime = System.currentTimeMillis() - startTime;
-      Log.d(YelicopterActivity.DEBUG_TAG, "Read time: " + readTime +
-          ", buffer sliding time: " + bufferSlidingTime + ", compute time: " +
-          computeTime);
+//      Log.d(YelicopterActivity.DEBUG_TAG, "Read time: " + readTime +
+//          ", buffer sliding time: " + bufferSlidingTime + ", compute time: " +
+//          computeTime);
 
       // arbitrary limits: if it's under 100 you're probably taking a
       // breath; if it's over 1000 it's probably just a skip or something.
-      if (maxIndex < YelicopterActivity.FREQ_BOTTOM_OF_SCREEN &&
-          maxIndex > YelicopterActivity.FREQ_LOWER_LIMIT) {
-        maxIndex = YelicopterActivity.FREQ_BOTTOM_OF_SCREEN;
+      if (maxIndex < WWActivity.FREQ_BOTTOM_OF_SCREEN &&
+          maxIndex > WWActivity.FREQ_LOWER_LIMIT) {
+        maxIndex = WWActivity.FREQ_BOTTOM_OF_SCREEN;
       }
-      if (maxIndex > YelicopterActivity.FREQ_TOP_OF_SCREEN &&
-          maxIndex < YelicopterActivity.FREQ_UPPER_LIMIT) {
-        maxIndex = YelicopterActivity.FREQ_TOP_OF_SCREEN;
+      if (maxIndex > WWActivity.FREQ_TOP_OF_SCREEN &&
+          maxIndex < WWActivity.FREQ_UPPER_LIMIT) {
+        maxIndex = WWActivity.FREQ_TOP_OF_SCREEN;
       }
-      if (maxIndex > YelicopterActivity.FREQ_LOWER_LIMIT && 
-          maxIndex < YelicopterActivity.FREQ_UPPER_LIMIT) {
+      if (maxIndex > WWActivity.FREQ_LOWER_LIMIT && 
+          maxIndex < WWActivity.FREQ_UPPER_LIMIT) {
         // post the sum back to the UI thread
         final int finalMaxIndex = maxIndex;
-        yelicopterActivity.getUiThreadHandler().post(new Runnable() {
+        wwActivity.getUiThreadHandler().post(new Runnable() {
           public void run() {
-            yelicopterActivity.setWeaselTop(finalMaxIndex);
-            yelicopterActivity.updateUi();
+            wwActivity.setWeaselTop(finalMaxIndex);
+            wwActivity.updateUi();
           }
         });
       }

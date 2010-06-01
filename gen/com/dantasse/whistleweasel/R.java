@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 public final class R {
     public static final class attr {
@@ -20,7 +20,7 @@ public final class R {
     public static final class id {
         public static final int StartScreen=0x7f050002;
         public static final int TextView01=0x7f050000;
-        public static final int YelicopterView=0x7f050001;
+        public static final int WWView=0x7f050001;
     }
     public static final class layout {
         public static final int main=0x7f030000;

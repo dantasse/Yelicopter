@@ -1,4 +1,4 @@
-package com.dantasse.yelicopter;
+package com.dantasse.whistleweasel;
 
 import edu.emory.mathcs.jtransforms.fft.FloatFFT_1D;
 
