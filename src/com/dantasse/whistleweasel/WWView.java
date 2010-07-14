@@ -35,7 +35,7 @@ public class WWView extends View {
   private static final double PINEAPPLE_PROBABILITY = .03;
 
   /** 
-   * The height that the copter will go toward. It doesn't just go there
+   * The height that the weasel will go toward. It doesn't just go there
    * immediately because we want the movement to be smooth.
    */
   private int targetHeight = 0;

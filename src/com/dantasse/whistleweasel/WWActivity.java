@@ -52,7 +52,7 @@ public class WWActivity extends Activity {
     handler = new Handler();
 
     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);  
-    wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "WhistleWeasel");
+    wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "WhistleWeasel");
     wakeLock.acquire();
   }
 
@@ -60,6 +60,7 @@ public class WWActivity extends Activity {
   protected void onPause() {
     super.onPause();
     wakeLock.release();
+    
     finish();
   }
 
